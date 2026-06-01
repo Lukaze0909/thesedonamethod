@@ -4,41 +4,136 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>释放</title>
+<title>释放工具</title>
+
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0e0e0e; --bg2: #181818; --bg3: #222;
-    --text: #e8e8e4; --text2: #999; --text3: #555;
-    --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
-    --accent: #c8b89a; --radius: 12px; --radius-sm: 8px;
-  }
-  html { background: var(--bg); color: var(--text); font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', sans-serif; font-size: 16px; line-height: 1.7; }
-  body { min-height: 100vh; display: flex; flex-direction: column; }
+body {
+  margin: 0;
+  font-family: -apple-system, sans-serif;
+  background: #111;
+  color: #eee;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  max-width: 500px;
+  padding: 30px;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #1c1c1c;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  background: #c8b89a;
+  color: black;
+}
+
+textarea {
+  width: 100%;
+  height: 80px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+  background: #2a2a2a;
+  color: white;
+}
+.small {
+  color: #888;
+  font-size: 14px;
+}
 </style>
+
 </head>
 
 <body>
 
+<div class="container">
+
+<h1>释放</h1>
+
+<div class="card" id="reminder"></div>
+
+<button onclick="start()">开始释放</button>
+
+<div id="flow" style="display:none">
+
+  <div class="card">
+    <div>👉 我现在在抗拒什么？</div>
+    <textarea id="input1"></textarea>
+  </div>
+
+  <div class="card">
+    <div>👉 我可以允许这个感受存在吗？</div>
+    <button onclick="allow()">可以</button>
+    <button onclick="allow()">还不行，但我愿意尝试</button>
+  </div>
+
+  <div class="card" id="finish" style="display:none">
+    <div>放松一点，不需要做到完美。</div>
+    <button onclick="done()">我放下了一点</button>
+  </div>
+
+</div>
+
+<div class="card small" id="history"></div>
+
+</div>
+
 <script>
-// ✅ 已修复这里的字符串错误（这是你白屏的原因）
 
 const reminders = [
-  { text: `所有感受都不过"三大想要"。` },
-  { text: `记得保持轻松的心态，不要把释放变成另一个"应该"。` },
-  { text: "允许一切如其所是。" },
-  { text: "你不需要控制，只需要允许。" }
+  "所有感受都只是暂时的。",
+  "你不需要控制，只需要允许。",
+  "抗拒才是痛苦的来源。",
+  "允许一切，如其所是。"
 ];
 
-// 简单渲染（确保页面一定有内容）
-document.body.innerHTML = `
-  <div style="padding:40px; font-size:20px;">
-    <h1>释放练习</h1>
-    <ul>
-      ${reminders.map(r => `<li>${r.text}</li>`).join("")}
-    </ul>
-  </div>
-`;
+document.getElementById("reminder").innerText =
+  reminders[Math.floor(Math.random() * reminders.length)];
+
+function start() {
+  document.getElementById("flow").style.display = "block";
+}
+
+function allow() {
+  document.getElementById("finish").style.display = "block";
+}
+
+function done() {
+  const text = document.getElementById("input1").value;
+  if (text) {
+    let logs = JSON.parse(localStorage.getItem("releaseLogs") || "[]");
+    logs.unshift(text);
+    localStorage.setItem("releaseLogs", JSON.stringify(logs));
+  }
+  loadHistory();
+  alert("很好，哪怕一点点也算释放。");
+}
+
+function loadHistory() {
+  let logs = JSON.parse(localStorage.getItem("releaseLogs") || "[]");
+  document.getElementById("history").innerHTML =
+    "<b>记录：</b><br>" + logs.slice(0,5).join("<br>");
+}
+
+loadHistory();
 
 </script>
 
