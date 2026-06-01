@@ -1,174 +1,45 @@
-<!DOCTYPE html>
-
-<html lang="zh">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>释放</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: -apple-system, sans-serif;
-  background: #111;
-  color: #eee;
-}
-
-.container {
-  max-width: 500px;
-  margin: auto;
-  padding: 20px;
-}
-
-.banner {
-  background: #1c1c1c;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
-
-.card {
-  background: #1c1c1c;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 15px;
-}
-
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  background: #c8b89a;
-}
-
-.switch {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.switch button {
-  flex: 1;
-  background: #333;
-  color: #eee;
-}
-
-.active {
-  background: #c8b89a !important;
-  color: black !important;
-}
-
-textarea {
-  width: 100%;
-  height: 80px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: none;
-  padding: 10px;
-  background: #2a2a2a;
-  color: white;
-}
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<h1>释放</h1>
-
-<div class="banner" id="quote"></div>
-
-<div class="switch">
-  <button id="morningBtn" onclick="setMode('morning')">🌅 早上</button>
-  <button id="nightBtn" onclick="setMode('night')">🌙 晚上</button>
-</div>
-
-<div class="card" id="guide"></div>
-
-<div class="card">
-  👉 现在想释放什么？
-  <textarea id="input"></textarea>
-</div>
-
-<div class="card">
-  👉 我可以允许这个感受存在吗？
-  <button onclick="next()">可以</button>
-  <button onclick="next()">还不行，但我愿意尝试</button>
-</div>
-
-<div class="card" id="finish" style="display:none">
-  👉 我是否愿意放下一点点？
-  <button onclick="done()">我愿意</button>
-</div>
-
-</div>
-
 <script>
+let round = 1;
 
-let mode = "morning";
+function nextRound() {
+  round++;
 
-const quotes = [
-"放下只是一个选择。",
-"所有感受都不过“三大想要”。",
-"我拥有这个世界上所有的时间。",
-"允许存在，而不是抗拒。",
-"我是宁愿抓住这个感受，还是更愿意获得自由？"
-];
+  const container = document.getElementById("flow");
 
-const morningGuide = `
-👉 起床释放一下：
-- 赖床的感觉
-- 想要高效的一天
-- 想控制今天的感觉
+  const block = document.createElement("div");
+  block.className = "round";
 
-👉 可以设一个今天的目标释放
-`;
+  block.innerHTML = `
+    <div class="question">第 ${round} 轮</div>
 
-const nightGuide = `
-👉 睡前释放：
-- 不想睡 / 没有睡意
-- 一天太短的感觉
-- 舍不得结束今天
+    <div class="question">你是否允许这个感受存在？</div>
+    <button onclick="stepDone()">可以</button>
+    <button onclick="stepDone()">还不行，但我愿意尝试</button>
 
-👉 让一切慢慢放下
-`;
+    <div class="question">你是否可以释放它？</div>
+    <button onclick="stepDone()">可以</button>
+    <button onclick="stepDone()">不确定</button>
 
-function setMode(m){
-  mode = m;
+    <div class="question">你是否愿意释放它？</div>
+    <button onclick="stepDone()">我愿意</button>
 
-  document.getElementById("morningBtn").classList.remove("active");
-  document.getElementById("nightBtn").classList.remove("active");
+    <div class="question">现在可以放下了吗？</div>
+    <button onclick="finish(true)">可以了</button>
+    <button onclick="finish(false)">还没有</button>
+  `;
 
-  if(m === "morning"){
-    document.getElementById("guide").innerText = morningGuide;
-    document.getElementById("morningBtn").classList.add("active");
-  }else{
-    document.getElementById("guide").innerText = nightGuide;
-    document.getElementById("nightBtn").classList.add("active");
+  container.appendChild(block);
+}
+
+function stepDone() {
+  // 只是占位，你可以加动画/反馈
+}
+
+function finish(released) {
+  if (released) {
+    alert("很好，这一轮你真的放下了一些。你会越来越轻松。");
+  } else {
+    nextRound(); // 🔥关键：进入下一轮
   }
 }
-
-function next(){
-  document.getElementById("finish").style.display = "block";
-}
-
-function done(){
-  alert("很好，慢慢你会越来越轻松。");
-}
-
-document.getElementById("quote").innerText =
-  quotes[Math.floor(Math.random()*quotes.length)];
-
-// 默认早上
-setMode("morning");
-
 </script>
-
-</body>
-</html>
