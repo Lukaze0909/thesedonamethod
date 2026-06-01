@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>释放工具</title>
+<title>释放</title>
 
 <style>
 body {
@@ -12,25 +12,27 @@ body {
   font-family: -apple-system, sans-serif;
   background: #111;
   color: #eee;
-  display: flex;
-  justify-content: center;
 }
 
 .container {
   max-width: 500px;
-  padding: 30px;
+  margin: auto;
+  padding: 20px;
 }
 
-h1 {
-  font-size: 28px;
+.banner {
+  background: #1c1c1c;
+  padding: 15px;
+  border-radius: 10px;
   margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .card {
   background: #1c1c1c;
   padding: 20px;
   border-radius: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 button {
@@ -41,7 +43,23 @@ button {
   border-radius: 10px;
   font-size: 16px;
   background: #c8b89a;
-  color: black;
+}
+
+.switch {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.switch button {
+  flex: 1;
+  background: #333;
+  color: #eee;
+}
+
+.active {
+  background: #c8b89a !important;
+  color: black !important;
 }
 
 textarea {
@@ -54,10 +72,6 @@ textarea {
   background: #2a2a2a;
   color: white;
 }
-.small {
-  color: #888;
-  font-size: 14px;
-}
 </style>
 
 </head>
@@ -68,72 +82,91 @@ textarea {
 
 <h1>释放</h1>
 
-<div class="card" id="reminder"></div>
+<div class="banner" id="quote"></div>
 
-<button onclick="start()">开始释放</button>
-
-<div id="flow" style="display:none">
-
-  <div class="card">
-    <div>👉 我现在在抗拒什么？</div>
-    <textarea id="input1"></textarea>
-  </div>
-
-  <div class="card">
-    <div>👉 我可以允许这个感受存在吗？</div>
-    <button onclick="allow()">可以</button>
-    <button onclick="allow()">还不行，但我愿意尝试</button>
-  </div>
-
-  <div class="card" id="finish" style="display:none">
-    <div>放松一点，不需要做到完美。</div>
-    <button onclick="done()">我放下了一点</button>
-  </div>
-
+<div class="switch">
+  <button id="morningBtn" onclick="setMode('morning')">🌅 早上</button>
+  <button id="nightBtn" onclick="setMode('night')">🌙 晚上</button>
 </div>
 
-<div class="card small" id="history"></div>
+<div class="card" id="guide"></div>
+
+<div class="card">
+  👉 现在想释放什么？
+  <textarea id="input"></textarea>
+</div>
+
+<div class="card">
+  👉 我可以允许这个感受存在吗？
+  <button onclick="next()">可以</button>
+  <button onclick="next()">还不行，但我愿意尝试</button>
+</div>
+
+<div class="card" id="finish" style="display:none">
+  👉 我是否愿意放下一点点？
+  <button onclick="done()">我愿意</button>
+</div>
 
 </div>
 
 <script>
 
-const reminders = [
-  "所有感受都只是暂时的。",
-  "你不需要控制，只需要允许。",
-  "抗拒才是痛苦的来源。",
-  "允许一切，如其所是。"
+let mode = "morning";
+
+const quotes = [
+"放下只是一个选择。",
+"所有感受都不过“三大想要”。",
+"我拥有这个世界上所有的时间。",
+"允许存在，而不是抗拒。",
+"我是宁愿抓住这个感受，还是更愿意获得自由？"
 ];
 
-document.getElementById("reminder").innerText =
-  reminders[Math.floor(Math.random() * reminders.length)];
+const morningGuide = `
+👉 起床释放一下：
+- 赖床的感觉
+- 想要高效的一天
+- 想控制今天的感觉
 
-function start() {
-  document.getElementById("flow").style.display = "block";
+👉 可以设一个今天的目标释放
+`;
+
+const nightGuide = `
+👉 睡前释放：
+- 不想睡 / 没有睡意
+- 一天太短的感觉
+- 舍不得结束今天
+
+👉 让一切慢慢放下
+`;
+
+function setMode(m){
+  mode = m;
+
+  document.getElementById("morningBtn").classList.remove("active");
+  document.getElementById("nightBtn").classList.remove("active");
+
+  if(m === "morning"){
+    document.getElementById("guide").innerText = morningGuide;
+    document.getElementById("morningBtn").classList.add("active");
+  }else{
+    document.getElementById("guide").innerText = nightGuide;
+    document.getElementById("nightBtn").classList.add("active");
+  }
 }
 
-function allow() {
+function next(){
   document.getElementById("finish").style.display = "block";
 }
 
-function done() {
-  const text = document.getElementById("input1").value;
-  if (text) {
-    let logs = JSON.parse(localStorage.getItem("releaseLogs") || "[]");
-    logs.unshift(text);
-    localStorage.setItem("releaseLogs", JSON.stringify(logs));
-  }
-  loadHistory();
-  alert("很好，哪怕一点点也算释放。");
+function done(){
+  alert("很好，慢慢你会越来越轻松。");
 }
 
-function loadHistory() {
-  let logs = JSON.parse(localStorage.getItem("releaseLogs") || "[]");
-  document.getElementById("history").innerHTML =
-    "<b>记录：</b><br>" + logs.slice(0,5).join("<br>");
-}
+document.getElementById("quote").innerText =
+  quotes[Math.floor(Math.random()*quotes.length)];
 
-loadHistory();
+// 默认早上
+setMode("morning");
 
 </script>
 
