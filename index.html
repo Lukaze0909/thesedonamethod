@@ -1,64 +1,39 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
 <title>释放</title>
 
 <style>
 body {
-  background: #0b0b0b;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont;
-  padding: 20px;
-}
-
-h1 {
-  font-size: 40px;
+  background:#0b0b0b;
+  color:#fff;
+  font-family:sans-serif;
+  padding:20px;
 }
 
 .card {
-  background: #1a1a1a;
-  padding: 20px;
-  border-radius: 20px;
-  margin-top: 20px;
-}
-
-textarea {
-  width: 100%;
-  height: 100px;
-  border-radius: 12px;
-  border: none;
-  padding: 10px;
-  background: #2a2a2a;
-  color: #fff;
+  background:#1a1a1a;
+  padding:20px;
+  border-radius:20px;
+  margin-top:20px;
 }
 
 button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 15px;
-  border-radius: 14px;
-  border: none;
-  background: #c8b79d;
-  font-size: 16px;
+  width:100%;
+  margin-top:10px;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:#c8b79d;
+  font-size:16px;
 }
 
-.round {
-  margin-top: 20px;
-  padding: 15px;
-  background: #111;
-  border-radius: 12px;
-}
-
-.quote {
-  margin-top: 20px;
-  opacity: 0.7;
-  font-size: 14px;
-}
-
-.mode-switch {
-  margin-top: 10px;
+.msg {
+  background:#111;
+  padding:15px;
+  border-radius:12px;
+  margin-top:15px;
 }
 </style>
 </head>
@@ -68,143 +43,84 @@ button {
 <h1>释放</h1>
 
 <div class="card">
-  <div id="banner">你不需要控制，只需要允许。</div>
+  <button onclick="start()">开始释放</button>
 </div>
 
-<div class="mode-switch">
-  <button onclick="setMode('morning')">☀️ 早上模式</button>
-  <button onclick="setMode('night')">🌙 晚上模式</button>
-</div>
-
-<div class="card">
-  👉 现在想释放什么？
-  <textarea id="input" placeholder="可以是情绪 / 抗拒 / 三大想要/目标"></textarea>
-  <button onclick="startRelease()">开始释放直到自由</button>
-</div>
-
-<div id="flow"></div>
-
-<div class="quote" id="quote"></div>
+<div id="chat"></div>
 
 <script>
 
-// ====== 金句 ======
-const quotes = [
-"放下只是一个选择。",
-"所有感受都不过“三大想要”。",
-"我是规则，世界在配合我。",
-"我拥有这个世界上所有的时间。",
-"情绪只是被我抓住的东西。",
-"允许存在，它就会消散。",
-"放下是一个随时可以做的决定。",
-"我是想理解它，还是想自由？",
-"情绪会说谎。",
-"释放不需要用力。",
-"你必须想要自由超过想要世界。",
-"我们紧紧抓住自己的感受，却又忘了是我们自己抓住它不放。",
-"我们误以为自己就是那个感受，但这不是真的。",
-"只是允许存在，而不是抗拒，那种感觉就会消失，在你脑中变得安静下来。",
-"即使是最深层的感受，也只是在表面上。在感受的核心，你会感觉到空无、静默和平静。",
-"即使是最强烈的感受，也不会比一个肥皂泡更实在。",
-"我是宁愿抓住这个感受不放，还是更愿意获得自由？",
-"那些你想要释放的情绪，会为了自己的存在而争辩。",
-"你永远不需要勉强或者强迫自己释放。此外，你要放下的只是当下这一刻的感受，而不是你从过去到现在体验到的所有感受。",
-"可能不会总是强烈地感受到自己的感受，但这并不意味着你做得不够好。",
-"当感受浮现上来、流过你的时候，让自己保持内在的开放。",
-"将你生活中的每一个烦恼视为获得更大自由的机会。",
-"保持轻松的心态，不要把释放变成另一个“应该”。",
-"如果有什么重要的事情需要你去理解，放下想要理解的欲望往往会让你更容易理解它。",
-"留意骄傲。看看你是否觉得它让你显得很特别，诚实地承认它，放下它。",
-"任何时候你觉得自己不得不、必须或应该做某事时，你就已经产生了抗拒。",
-"尽可能不假思索地回答问题，避免陷入内心的纠结与思考。不管答案如何，都进入下一步。"
-];
-
-// ====== banner循环 ======
-const steps = [
-"1️⃣ 看见感受",
-"2️⃣ 允许它存在",
-"3️⃣ 不抗拒",
-"4️⃣ 允许释放",
-"5️⃣ 放下一点点",
-"6️⃣ 重复直到自由"
-];
-
 let stepIndex = 0;
 
-setInterval(() => {
-  document.getElementById("banner").innerText = steps[stepIndex];
-  stepIndex = (stepIndex + 1) % steps.length;
-}, 2500);
-
-
-// ====== 模式 ======
-function setMode(mode){
-  if(mode === 'morning'){
-    alert("早上：随便释放 + 定一个目标");
-  }else{
-    alert("晚上：释放今天的残留情绪 + 放松入睡");
+const steps = [
+  {
+    q: "👉 允许这个感受存在吗？",
+    a: ["可以", "我愿意尝试"]
+  },
+  {
+    q: "👉 可以释放它吗？",
+    a: ["可以", "不确定"]
+  },
+  {
+    q: "👉 愿意释放它吗？",
+    a: ["我愿意"]
+  },
+  {
+    q: "👉 现在可以放下了吗？",
+    a: ["可以了", "还没有"]
   }
+];
+
+function start(){
+  document.getElementById("chat").innerHTML = "";
+  stepIndex = 0;
+  nextStep();
 }
 
+function nextStep(){
+  if(stepIndex >= steps.length){
+    showDone();
+    return;
+  }
 
-// ====== 随机金句 ======
-function showQuote(){
-  const q = quotes[Math.floor(Math.random()*quotes.length)];
-  document.getElementById("quote").innerText = q;
-}
+  const step = steps[stepIndex];
 
+  const div = document.createElement("div");
+  div.className = "msg";
 
-// ====== 释放流程 ======
-let round = 0;
+  let html = `<div>${step.q}</div>`;
 
-function startRelease(){
-  round = 0;
-  document.getElementById("flow").innerHTML = "";
-  nextRound();
-  showQuote();
-}
+  step.a.forEach(text=>{
+    html += `<button onclick="choose('${text}')">${text}</button>`;
+  });
 
-function nextRound(){
-  round++;
+  div.innerHTML = html;
+  document.getElementById("chat").appendChild(div);
 
-  const container = document.getElementById("flow");
-
-  const block = document.createElement("div");
-  block.className = "round";
-
-  block.innerHTML = `
-    <div>第 ${round} 轮</div>
-
-    <div>👉 允许这个感受存在吗？</div>
-    <button onclick="step()">可以</button>
-    <button onclick="step()">我愿意尝试</button>
-
-    <div>👉 可以释放它吗？</div>
-    <button onclick="step()">可以</button>
-    <button onclick="step()">不确定</button>
-
-    <div>👉 愿意释放它吗？</div>
-    <button onclick="step()">我愿意</button>
-
-    <div>👉 现在可以放下了吗？</div>
-    <button onclick="finish(true)">可以了</button>
-    <button onclick="finish(false)">还没有</button>
-  `;
-
-  container.appendChild(block);
   window.scrollTo(0, document.body.scrollHeight);
 }
 
-function step(){
-  // 留空（你后面可以加动画）
+function choose(answer){
+  const div = document.createElement("div");
+  div.className = "msg";
+  div.innerHTML = "👉 你选择了：" + answer;
+  document.getElementById("chat").appendChild(div);
+
+  // 如果选择“还没有” → 重来
+  if(answer === "还没有"){
+    stepIndex = 0;
+  }else{
+    stepIndex++;
+  }
+
+  nextStep();
 }
 
-function finish(done){
-  if(done){
-    alert("很棒。你必须想要自由超过想要世界。");
-  }else{
-    nextRound(); // 🔥 无限循环核心
-  }
+function showDone(){
+  const div = document.createElement("div");
+  div.className = "msg";
+  div.innerHTML = "✨ 很棒。你已经在释放了。";
+  document.getElementById("chat").appendChild(div);
 }
 
 </script>
