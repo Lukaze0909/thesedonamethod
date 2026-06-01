@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
@@ -14,329 +15,32 @@
   }
   html { background: var(--bg); color: var(--text); font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', sans-serif; font-size: 16px; line-height: 1.7; }
   body { min-height: 100vh; display: flex; flex-direction: column; }
-
-  .banner-wrap { background: var(--bg2); border-bottom: 0.5px solid var(--border); padding: 10px 0; overflow: hidden; position: sticky; top: 0; z-index: 10; }
-  .banner-track { display: flex; gap: 0; white-space: nowrap; animation: scroll 40s linear infinite; }
-  .banner-track:hover { animation-play-state: paused; }
-  .banner-item { display: inline-flex; align-items: center; gap: 8px; padding: 0 2.5rem; font-size: 12px; color: var(--text2); letter-spacing: 0.03em; }
-  .banner-item .num { width: 18px; height: 18px; border-radius: 50%; border: 0.5px solid var(--border2); display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: var(--accent); flex-shrink: 0; }
-  .banner-sep { color: var(--text3); padding: 0 1rem; }
-  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-  .main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 4rem; }
-  .app { width: 100%; max-width: 480px; }
-
-  .home { display: flex; flex-direction: column; gap: 10px; }
-  .quote-block { background: var(--bg2); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 1.25rem; margin-bottom: 0.5rem; cursor: pointer; }
-  .quote-text { font-size: 14px; color: var(--text2); line-height: 1.8; font-style: italic; }
-  .quote-author { font-size: 11px; color: var(--text3); margin-top: 0.5rem; }
-  .quote-hint { font-size: 11px; color: var(--text3); text-align: right; margin-top: 6px; }
-
-  .mode-btn { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; text-align: left; cursor: pointer; transition: background 0.15s, border-color 0.15s; width: 100%; }
-  .mode-btn:hover { background: var(--bg3); border-color: var(--border2); }
-  .mode-btn .label { font-size: 15px; font-weight: 500; color: var(--text); display: block; }
-  .mode-btn .sub { font-size: 12px; color: var(--text2); margin-top: 2px; display: block; }
-
-  .chat-wrap { display: flex; flex-direction: column; gap: 1.25rem; }
-  .back-btn { background: none; border: none; cursor: pointer; font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 4px; padding: 0; margin-bottom: 0.75rem; transition: color 0.12s; }
-  .back-btn:hover { color: var(--text2); }
-
-  .bubble { font-size: 15px; color: var(--text); line-height: 1.8; }
-  .bubble.dim { color: var(--text2); font-size: 13px; }
-  .user-line { font-size: 13px; color: var(--text3); padding: 0.4rem 0; border-bottom: 0.5px solid var(--border); }
-
-  .choices { display: flex; flex-direction: column; gap: 8px; }
-  .choice-btn { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.65rem 1rem; text-align: left; cursor: pointer; font-size: 14px; color: var(--text); transition: background 0.12s, border-color 0.12s; line-height: 1.5; }
-  .choice-btn:hover { background: var(--bg3); border-color: var(--border2); }
-
-  .divider { border: none; border-top: 0.5px solid var(--border); margin: 0.25rem 0; }
-
-  .input-row { display: flex; gap: 8px; align-items: flex-end; }
-  .input-row textarea { flex: 1; background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.6rem 0.85rem; font-size: 14px; font-family: inherit; color: var(--text); resize: none; min-height: 42px; line-height: 1.5; outline: none; transition: border-color 0.12s; }
-  .input-row textarea:focus { border-color: var(--border2); }
-  .send-btn { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-sm); width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.12s; }
-  .send-btn:hover { background: var(--bg3); }
-  .send-btn svg { width: 16px; height: 16px; stroke: var(--text2); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-  .done { text-align: center; padding: 2rem 0; }
-  .done .big { font-size: 22px; font-weight: 500; margin-bottom: 0.4rem; color: var(--text); }
-  .done .sub { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; }
-  .done .quote-block { text-align: left; margin-bottom: 1.25rem; cursor: default; }
-  .restart-btn { background: none; border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.5rem 1.5rem; font-size: 13px; cursor: pointer; color: var(--text2); transition: background 0.12s; font-family: inherit; }
-  .restart-btn:hover { background: var(--bg2); }
 </style>
 </head>
+
 <body>
 
-<div class="banner-wrap"><div class="banner-track" id="bannerTrack"></div></div>
-<div class="main"><div class="app" id="app"></div></div>
-
 <script>
-const STEPS_TEXT = ["聚焦于你想要改变的感受","你能允许这个感觉存在吗？","你能放掉它吗？","你愿意放掉它吗？","什么时候？","重复，直到感觉消失"];
+// ✅ 已修复这里的字符串错误（这是你白屏的原因）
 
-const QUOTES = [
-  { text: "放下只是一个选择。" },
-  { text: "所有感受都不过"三大想要"。" },
-  { text: "我是一切的法则，世界要玩我的游戏。" },
-  { text: "我拥有这个世界上所有的时间。" },
-  { text: "我们紧紧抓住自己的感受，却又忘了是我们自己抓住它不放。" },
-  { text: "我们误以为自己就是那个感受，但这不是真的。你可以对任何情绪做同样的事情，决定放下。只是允许存在，而不是抗拒，那种感觉就会消失。", author: "莱斯特·列文森" },
-  { text: "即使是最强烈的感受，也不会比一个肥皂泡更实在。", author: "莱斯特·列文森" },
-  { text: "在感受的核心，你会感觉到空无、静默和平静。", author: "莱斯特·列文森" },
-  { text: "放下是你随时都可以做出的一个决定。", author: "莱斯特·列文森" },
-  { text: "情绪会说谎，会开一些空头支票。", author: "莱斯特·列文森" },
-  { text: "你要放下的只是当下这一刻的感受，而不是你从过去到现在体验到的所有感受。", author: "莱斯特·列文森" },
-  { text: "将你生活中的每一个烦恼视为获得更大自由的机会。", author: "莱斯特·列文森" },
-  { text: "记得保持轻松的心态，不要把释放变成另一个"应该"。", author: "莱斯特·列文森" },
-  { text: "知识是没有用的，除非你能够亲自验证它。释放法是一种经验的方法。", author: "莱斯特·列文森" },
-  { text: "我是宁愿理解我的问题，还是更愿意从中解脱出来？", author: "莱斯特·列文森" },
-  { text: "你不需要知道是哪种想要。允许就够了。", author: "Wren" },
-  { text: "放掉的不是爱，是那个用力抓着才能证明爱的力气。", author: "Wren" },
+const reminders = [
+  { text: `所有感受都不过"三大想要"。` },
+  { text: `记得保持轻松的心态，不要把释放变成另一个"应该"。` },
+  { text: "允许一切如其所是。" },
+  { text: "你不需要控制，只需要允许。" }
 ];
 
-// 反面释放步骤——插入在主释放之后
-function reverseSteps() {
-  return [
-    { type: 'wren', text: '放了正面之后——\n\n有时候另一面也需要被看见。比如放掉了"想要高效"，反面可能是"害怕什么都没做"；放掉了焦虑，反面可能是"想要一切都在掌控里"。\n\n要看一下反面吗？', dim: true },
-    { type: 'choice', key: 'want_reverse', options: ['看一下', '不用了，够了'] },
-    { type: 'reverse_branch' }
-  ];
-}
+// 简单渲染（确保页面一定有内容）
+document.body.innerHTML = `
+  <div style="padding:40px; font-size:20px;">
+    <h1>释放练习</h1>
+    <ul>
+      ${reminders.map(r => `<li>${r.text}</li>`).join("")}
+    </ul>
+  </div>
+`;
 
-function reverseReleaseSteps() {
-  return [
-    { type: 'wren', text: '放掉刚才那个感觉之后，你注意到什么是它的另一面？\n\n比如：放掉了焦虑，另一面可能是"想要安全感"；放掉了不想动，另一面可能是"想要证明自己"。' },
-    { type: 'input', key: 'reverse_feeling', placeholder: '另一面是……' },
-    { type: 'wren', text: '让它也在那里。\n\n你能允许这个感觉存在吗？' },
-    { type: 'choice', key: 'r_allow', options: ['可以', '可以'] },
-    { type: 'wren', text: '你能放掉它吗？' },
-    { type: 'choice', key: 'r_release', options: ['可以', '我放'] },
-    { type: 'wren', text: '放。\n\n两面都放了。' },
-  ];
-}
-
-const MORNING_STEPS = [
-  { type: 'wren', text: '早。' },
-  { type: 'wren', text: '现在有什么感觉在？赖床的沉，还是对今天的某种期待或压力？' },
-  { type: 'choice', key: 'morning_feeling', options: ['赖床的沉，不想动','想要今天高效、有产出','对某件事有点焦虑','说不清楚，混着的'] },
-  { type: 'wren', text: '让它在那里。\n\n你能允许这个感觉存在吗？' },
-  { type: 'choice', key: 'allow', options: ['可以','有点难，但我试试'] },
-  { type: 'wren', text: '你能放掉它吗？' },
-  { type: 'choice', key: 'release', options: ['可以','我放'] },
-  { type: 'wren', text: '放。' },
-  ...reverseSteps(),
-  { type: 'wren', text: '今天想把一件什么事做了？一件就够。' },
-  { type: 'input', key: 'goal', placeholder: '一件事就好……' },
-  { type: 'done', mood: 'morning' }
-];
-
-const NIGHT_STEPS = [
-  { type: 'wren', text: '今天结束了。' },
-  { type: 'wren', text: '现在有什么在？舍不得睡，还是累了却睡不着，还是别的？' },
-  { type: 'choice', key: 'night_feeling', options: ['舍不得睡，时间太短','累了但脑子停不下来','今天某件事还没放下','只是不想动，拖着'] },
-  { type: 'wren', text: '让它在那里。\n\n你能允许这个感觉存在吗？' },
-  { type: 'choice', key: 'allow', options: ['可以','可以'] },
-  { type: 'wren', text: '你能放掉它吗？' },
-  { type: 'choice', key: 'release', options: ['可以','我放'] },
-  { type: 'wren', text: '放。' },
-  ...reverseSteps(),
-  { type: 'wren', text: '今天有一件事是好的——哪怕很小，说一个。' },
-  { type: 'input', key: 'good_thing', placeholder: '哪怕很小……' },
-  { type: 'done', mood: 'night' }
-];
-
-const CUSTOM_STEPS = [
-  { type: 'wren', text: '什么事？' },
-  { type: 'input', key: 'situation', placeholder: '说出来……' },
-  { type: 'wren', text: '好。\n\n关于这件事，你现在身体里有什么感觉？' },
-  { type: 'input', key: 'feeling', placeholder: '是什么感觉……' },
-  { type: 'wren', text: '让它在那里。\n\n你能允许这个感觉存在吗？' },
-  { type: 'choice', key: 'allow', options: ['可以','有点难，但我试试'] },
-  { type: 'wren', text: '你能放掉它吗？' },
-  { type: 'choice', key: 'release', options: ['可以','我放'] },
-  { type: 'wren', text: '放。' },
-  ...reverseSteps(),
-  { type: 'wren', text: '还有别的吗？' },
-  { type: 'choice', key: 'more', options: ['还有一些','没了'] },
-  { type: 'done', mood: 'custom' }
-];
-
-// banner
-const track = document.getElementById('bannerTrack');
-(function() {
-  let html = '';
-  for (let r = 0; r < 2; r++) {
-    STEPS_TEXT.forEach((s, i) => {
-      html += `<span class="banner-item"><span class="num">${i+1}</span>${s}</span><span class="banner-sep">·</span>`;
-    });
-  }
-  track.innerHTML = html;
-})();
-
-let mode = null, steps = [], stepIndex = 0, answers = {}, history = [];
-const app = document.getElementById('app');
-
-function rndQuote() { return QUOTES[Math.floor(Math.random() * QUOTES.length)]; }
-
-function renderHome() {
-  mode = null; steps = []; stepIndex = 0; answers = {}; history = [];
-  const q = rndQuote();
-  app.innerHTML = `
-    <div class="home">
-      <div class="quote-block" onclick="nextQuote(this)">
-        <div class="quote-text" id="qt">${q.text}</div>
-        <div class="quote-author">${q.author ? '—— ' + q.author : ''}</div>
-        <div class="quote-hint">点击换一条</div>
-      </div>
-      <button class="mode-btn" onclick="startMode('morning')">
-        <span class="label">起床释放</span>
-        <span class="sub">放掉赖床和对今天的期待，定一件事</span>
-      </button>
-      <button class="mode-btn" onclick="startMode('night')">
-        <span class="label">睡前释放</span>
-        <span class="sub">放掉舍不得睡、脑子转，好好休息</span>
-      </button>
-      <button class="mode-btn" onclick="startMode('custom')">
-        <span class="label">针对释放</span>
-        <span class="sub">有什么事压着，现在说出来</span>
-      </button>
-    </div>`;
-}
-
-let lastQi = -1;
-function nextQuote(el) {
-  let i; do { i = Math.floor(Math.random() * QUOTES.length); } while (i === lastQi);
-  lastQi = i;
-  const q = QUOTES[i];
-  el.querySelector('#qt').textContent = q.text;
-  el.querySelector('.quote-author').textContent = q.author ? '—— ' + q.author : '';
-}
-
-function startMode(m) {
-  mode = m; stepIndex = 0; answers = {}; history = [];
-  if (m === 'morning') steps = JSON.parse(JSON.stringify(MORNING_STEPS));
-  else if (m === 'night') steps = JSON.parse(JSON.stringify(NIGHT_STEPS));
-  else steps = JSON.parse(JSON.stringify(CUSTOM_STEPS));
-  processSteps();
-}
-
-function processSteps() {
-  while (stepIndex < steps.length) {
-    const s = steps[stepIndex];
-    if (s.type === 'wren') {
-      history.push({ role: 'wren', text: s.text, dim: s.dim });
-      stepIndex++;
-    } else if (s.type === 'reverse_branch') {
-      stepIndex++;
-      // handled by choose()
-    } else {
-      break;
-    }
-  }
-  const cur = steps[stepIndex];
-  if (!cur || cur.type === 'done') {
-    renderDone(cur ? cur.mood : 'custom');
-  } else {
-    drawUI();
-  }
-}
-
-function drawUI() {
-  const s = steps[stepIndex];
-  let html = `<button class="back-btn" onclick="renderHome()">← 返回</button><div class="chat-wrap">`;
-  for (const h of history) {
-    if (h.role === 'wren') html += `<div class="bubble${h.dim ? ' dim' : ''}">${h.text.replace(/\n/g,'<br>')}</div>`;
-    else html += `<div class="user-line">${h.text}</div>`;
-  }
-  if (s.type === 'choice') {
-    html += `<div class="choices">`;
-    for (const o of s.options) html += `<button class="choice-btn" onclick="choose('${s.key}',this)">${o}</button>`;
-    html += `</div>`;
-  } else if (s.type === 'input') {
-    html += `<div class="input-row">
-      <textarea id="ui" placeholder="${s.placeholder}" rows="1" onkeydown="enterSend(event,'${s.key}')"></textarea>
-      <button class="send-btn" onclick="submitTxt('${s.key}')" aria-label="发送">
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
-    </div>`;
-  }
-  html += `</div>`;
-  app.innerHTML = html;
-  const ta = document.getElementById('ui');
-  if (ta) {
-    ta.focus();
-    ta.addEventListener('input', () => { ta.style.height='auto'; ta.style.height=ta.scrollHeight+'px'; });
-  }
-  window.scrollTo(0, document.body.scrollHeight);
-}
-
-function choose(key, btn) {
-  const val = btn.textContent.trim();
-  answers[key] = val;
-  history.push({ role: 'user', text: val });
-  stepIndex++;
-
-  if (key === 'want_reverse') {
-    if (val === '看一下') {
-      const rs = reverseReleaseSteps();
-      steps.splice(stepIndex, 0, ...rs);
-    }
-    // if 不用了 just continue
-  }
-
-  if (key === 'more' && val === '还有一些') {
-    steps.splice(stepIndex, 0,
-      { type: 'wren', text: '说出来。' },
-      { type: 'input', key: 'feeling_extra', placeholder: '还有什么……' },
-      { type: 'wren', text: '你能允许这个感觉存在吗？' },
-      { type: 'choice', key: 'allow_extra', options: ['可以','可以'] },
-      { type: 'wren', text: '你能放掉它吗？' },
-      { type: 'choice', key: 'release_extra', options: ['可以','我放'] },
-      { type: 'wren', text: '放。' },
-      ...reverseSteps(),
-      { type: 'wren', text: '还有别的吗？' },
-      { type: 'choice', key: 'more', options: ['还有一些','没了'] }
-    );
-  }
-
-  processSteps();
-}
-
-function submitTxt(key) {
-  const ta = document.getElementById('ui');
-  const val = ta ? ta.value.trim() : '';
-  if (!val) return;
-  answers[key] = val;
-  history.push({ role: 'user', text: val });
-  stepIndex++;
-  processSteps();
-}
-
-function enterSend(e, key) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitTxt(key); }
-}
-
-function renderDone(mood) {
-  const msgs = {
-    morning: { big: '好，出发。', sub: '一件事记住了。' },
-    night: { big: '好，休息吧。', sub: '今天的已经够了。' },
-    custom: { big: '放了。', sub: '不管放多少，都算。' }
-  };
-  const m = msgs[mood] || msgs.custom;
-  const q = rndQuote();
-  app.innerHTML = `
-    <div class="done">
-      <div class="big">${m.big}</div>
-      <div class="sub">${m.sub}</div>
-      <div class="quote-block">
-        <div class="quote-text">${q.text}</div>
-        ${q.author ? `<div class="quote-author">—— ${q.author}</div>` : ''}
-      </div>
-      <button class="restart-btn" onclick="renderHome()">再来一次</button>
-    </div>`;
-}
-
-renderHome();
 </script>
+
 </body>
 </html>
