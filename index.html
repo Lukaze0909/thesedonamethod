@@ -166,13 +166,13 @@ var CUSTOM_STEPS = [
   { type: 'done', mood: 'custom' }
 ]);
 
-var mode = null, steps = [], stepIndex = 0, answers = {}, history = [];
+var mode = null, steps = [], stepIndex = 0, answers = {}, chatHistory = [];
 var app = document.getElementById('app');
 
 function rndQuote() { return QUOTES[Math.floor(Math.random() * QUOTES.length)]; }
 
 function renderHome() {
-  mode = null; steps = []; stepIndex = 0; answers = {}; history = [];
+  mode = null; steps = []; stepIndex = 0; answers = {}; chatHistory = [];
   var q = rndQuote();
   app.innerHTML = '<div class="home">'
     + '<div class="quote-block" onclick="nextQuote(this)">'
@@ -208,7 +208,7 @@ function nextQuote(el) {
 function deepCopy(obj) { return JSON.parse(JSON.stringify(obj)); }
 
 function startMode(m) {
-  mode = m; stepIndex = 0; answers = {}; history = [];
+  mode = m; stepIndex = 0; answers = {}; chatHistory = [];
   if (m === 'morning') steps = deepCopy(MORNING_STEPS);
   else if (m === 'night') steps = deepCopy(NIGHT_STEPS);
   else steps = deepCopy(CUSTOM_STEPS);
@@ -219,7 +219,7 @@ function processSteps() {
   while (stepIndex < steps.length) {
     var s = steps[stepIndex];
     if (s.type === 'wren') {
-      history.push({ role: 'wren', text: s.text, dim: s.dim });
+      chatHistory.push({ role: 'wren', text: s.text, dim: s.dim });
       stepIndex++;
     } else if (s.type === 'reverse_branch') {
       stepIndex++;
@@ -242,8 +242,8 @@ function escAttr(s) {
 function drawUI() {
   var s = steps[stepIndex];
   var html = '<button class="back-btn" onclick="renderHome()">\u2190 返回</button><div class="chat-wrap">';
-  for (var i = 0; i < history.length; i++) {
-    var h = history[i];
+  for (var i = 0; i < chatHistory.length; i++) {
+    var h = chatHistory[i];
     if (h.role === 'wren') {
       html += '<div class="bubble' + (h.dim ? ' dim' : '') + '">' + h.text.replace(/\n/g,'<br>') + '</div>';
     } else {
@@ -276,7 +276,7 @@ function drawUI() {
 function choose(key, btn) {
   var val = btn.textContent.trim();
   answers[key] = val;
-  history.push({ role: 'user', text: val });
+  chatHistory.push({ role: 'user', text: val });
   stepIndex++;
 
   if (key === 'want_reverse' && val === '看一下') {
@@ -312,7 +312,7 @@ function submitTxt(key) {
   var val = ta ? ta.value.trim() : '';
   if (!val) return;
   answers[key] = val;
-  history.push({ role: 'user', text: val });
+  chatHistory.push({ role: 'user', text: val });
   stepIndex++;
   processSteps();
 }
