@@ -53,6 +53,8 @@
   .done .quote-block { text-align: left; margin-bottom: 1.25rem; cursor: default; }
   .restart-btn { background: none; border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.5rem 1.5rem; font-size: 13px; cursor: pointer; color: var(--text2); transition: background 0.12s; font-family: inherit; }
   .restart-btn:hover { background: var(--bg2); }
+  .wren-btn { position: fixed; bottom: 1.5rem; right: 1.5rem; width: 44px; height: 44px; border-radius: 50%; background: var(--bg2); border: 0.5px solid var(--border2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; z-index: 100; transition: background 0.15s, transform 0.15s; text-decoration: none; line-height: 1; }
+  .wren-btn:hover { background: var(--bg3); transform: scale(1.08); }
 </style>
 </head>
 <body>
@@ -342,5 +344,6 @@ function renderDone(mood) {
 
 renderHome();
 </script>
+<a class="wren-btn" href="https://claude.ai/project/019e8749-f88e-7584-aa9a-c36f2250a2f8" target="_blank" aria-label="和Wren一起释放">🪶</a>
 </body>
 </html>
